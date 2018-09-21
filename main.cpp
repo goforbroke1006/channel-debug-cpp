@@ -16,20 +16,20 @@ public:
     explicit Channel(size_t c) : capacity(c) {}
 
     void operator<<(const T obj) {
-        while (buffer.size() >= capacity)
+        while (buffer.size() >= capacity) {
+            buffer_mutex.unlock();
             std::this_thread::yield();
-        while (!buffer_mutex.try_lock())
-            std::this_thread::yield();
+        }
+        std::unique_lock<mutex> lock(buffer_mutex);
         buffer.push(obj);
-        buffer_mutex.unlock();
     }
 
     void operator>>(T &obj) {
-        while (buffer.empty())
+        while (buffer.empty() || !buffer_mutex.try_lock() || buffer.empty())
             std::this_thread::yield();
-        unique_lock<mutex> lock(buffer_mutex);
         obj = buffer.front();
         buffer.pop();
+        buffer_mutex.unlock();
     }
 
     const size_t getLength() const {
