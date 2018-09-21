@@ -16,7 +16,7 @@ public:
     explicit Channel(size_t c) : capacity(c) {}
 
     void operator<<(const T obj) {
-        while (buffer.size() == capacity)
+        while (buffer.size() >= capacity)
             std::this_thread::yield();
         while (!buffer_mutex.try_lock())
             std::this_thread::yield();
@@ -31,6 +31,10 @@ public:
         obj = buffer.front();
         buffer.pop();
     }
+
+    const size_t getLength() const {
+        return buffer.size();
+    }
 };
 
 void writeRoutine(Channel<string> &ch, __useconds_t delay, int index) {
@@ -44,7 +48,8 @@ void readRoutine(Channel<string> &ch) {
     string s;
     while (true) {
         ch >> s;
-        cout << s << endl;
+        cout << ch.getLength() << " : " << s << " : " << ch.getLength() << endl;
+        usleep(2000000);
     }
 }
 
