@@ -6,6 +6,8 @@
 
 using namespace std;
 
+#define SECOND_SLEEP 1000000
+
 template<class T>
 class Channel {
 private:
@@ -52,7 +54,7 @@ void readRoutine(Channel<string> &ch) {
     while (true) {
         ch >> s;
         cout << ch.getLength() << " : " << s << " : " << ch.getLength() << " : " << ch.getCapacity() << endl;
-        usleep(2000000);
+        usleep(2 * SECOND_SLEEP);
     }
 }
 
