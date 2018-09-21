@@ -14,8 +14,6 @@ private:
     std::queue<T> buffer;
     size_t capacity;
     mutex buffer_mutex;
-    mutex wait_not_empty_mutex;
-    condition_variable cv;
 public:
     explicit Channel(size_t c) : capacity(c) {}
 
