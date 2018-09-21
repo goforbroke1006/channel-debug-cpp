@@ -34,6 +34,10 @@ public:
     const size_t getLength() const {
         return buffer.size();
     }
+
+    const size_t &getCapacity() const {
+        return capacity;
+    }
 };
 
 void writeRoutine(Channel<string> &ch, __useconds_t delay, int index) {
@@ -47,7 +51,7 @@ void readRoutine(Channel<string> &ch) {
     string s;
     while (true) {
         ch >> s;
-        cout << ch.getLength() << " : " << s << " : " << ch.getLength() << endl;
+        cout << ch.getLength() << " : " << s << " : " << ch.getLength() << " : " << ch.getCapacity() << endl;
         usleep(2000000);
     }
 }
