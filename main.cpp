@@ -1,8 +1,6 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
-#include <vector>
-#include <condition_variable>
 #include <queue>
 #include <unistd.h>
 
