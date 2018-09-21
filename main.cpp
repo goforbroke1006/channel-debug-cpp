@@ -17,7 +17,6 @@ public:
 
     void operator<<(const T obj) {
         while (buffer.size() >= capacity) {
-            buffer_mutex.unlock();
             std::this_thread::yield();
         }
         std::unique_lock<mutex> lock(buffer_mutex);
