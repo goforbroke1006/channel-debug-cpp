@@ -3,7 +3,7 @@ project(channel_debug)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(channel_debug main.cpp)
+add_executable(channel_debug main.cpp channel.h)
 
 target_link_libraries(channel_debug
         pthread
