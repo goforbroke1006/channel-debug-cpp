@@ -15,9 +15,9 @@ void writeRoutine(Channel<string> &ch, __useconds_t delay, int index, unsigned i
     }
 }
 
-void readRoutine(Channel<string> &ch) {
+void readRoutine(Channel<string> &ch, unsigned int waitJobsCount) {
     string s;
-    while (true) {
+    for (int i = 0; i < waitJobsCount; ++i) {
         cout << ch.getLength();
         cout << " (" << (ch.isFull() ? "full" : "not full") << ") ";
         ch >> s;
@@ -34,11 +34,16 @@ int main(int argc, char **argv) {
 
     vector<thread> tasks;
 
-    tasks.emplace_back(writeRoutine, ref(ch), 500, 1, 8);
-    tasks.emplace_back(writeRoutine, ref(ch), 300, 2, 3);
-    tasks.emplace_back(writeRoutine, ref(ch), 250, 3, 2);
+    int limit1 = 8;
+    int limit2 = 3;
+    int limit3 = 2;
 
-    tasks.emplace_back(readRoutine, ref(ch));
+    tasks.emplace_back(writeRoutine, ref(ch), 500, 1, limit1);
+    tasks.emplace_back(writeRoutine, ref(ch), 300, 2, limit2);
+    tasks.emplace_back(writeRoutine, ref(ch), 250, 3, limit3);
+
+    tasks.emplace_back(readRoutine, ref(ch),
+                       limit1 + limit2 + limit3);
 
     for (thread &t : tasks)
         t.join();
