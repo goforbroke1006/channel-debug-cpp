@@ -1,3 +1,7 @@
 .idea
 cmake-build-debug/
+
+ams-analyse/
 leaks-check/
+
+*.h.gch
