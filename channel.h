@@ -24,7 +24,7 @@ public:
     /**
      * write to channel
      */
-    void operator<<(const T obj) {
+    inline void operator<<(const T obj) {
         unique_lock<mutex> lock(buffer_mutex);
         cv_full.wait(lock, [this] { return getLength() < getCapacity(); });
         buffer.push(obj);
@@ -34,7 +34,7 @@ public:
     /**
      * read from channel
      */
-    void operator>>(T &obj) {
+    inline void operator>>(T &obj) {
         unique_lock<mutex> lock(buffer_mutex);
         cv_empty.wait(lock, [this] { return getLength() > 0; });
         obj = buffer.front();
