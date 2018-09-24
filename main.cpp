@@ -14,22 +14,32 @@ class Channel {
 private:
     std::queue<T> buffer;
     size_t capacity;
+    //recursive_mutex buffer_mutex; // lock_guard
     mutex buffer_mutex;
-    std::condition_variable cv;
+    std::condition_variable cve;
+    std::condition_variable cvf;
 public:
     explicit Channel(size_t c) : capacity(c) {}
 
+    /**
+     * write to channel
+     */
     void operator<<(const T obj) {
         unique_lock<mutex> lock(buffer_mutex);
-        cv.wait(lock, [this]{ return getLength() < getCapacity(); });
+        cvf.wait(lock, [this]{ return getLength() < getCapacity(); });
         buffer.push(obj);
+        cve.notify_one();
     }
 
+    /**
+     * read from channel
+     */
     void operator>>(T &obj) {
         unique_lock<mutex> lock(buffer_mutex);
+        cve.wait(lock, [this]{ return getLength() > 0; });
         obj = buffer.front();
         buffer.pop();
-        cv.notify_one();
+        cvf.notify_one();
     }
 
     const size_t getLength() const {
