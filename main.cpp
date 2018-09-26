@@ -37,13 +37,19 @@ int main(int argc, char **argv) {
     int limit1 = 8;
     int limit2 = 3;
     int limit3 = 2;
+    int limit4 = 9;
+    int limit5 = 3;
 
     tasks.emplace_back(writeRoutine, ref(ch), 500, 1, limit1);
     tasks.emplace_back(writeRoutine, ref(ch), 300, 2, limit2);
     tasks.emplace_back(writeRoutine, ref(ch), 250, 3, limit3);
+    tasks.emplace_back(writeRoutine, ref(ch), 450, 4, limit4);
+    tasks.emplace_back(writeRoutine, ref(ch), 850, 5, limit5);
 
-    tasks.emplace_back(readRoutine, ref(ch),
-                       limit1 + limit2 + limit3);
+    int bitesCount = limit1 + limit2 + limit3 + limit4 + limit5;
+    cout << "Bites count: " << bitesCount << endl;
+
+    tasks.emplace_back(readRoutine, ref(ch), bitesCount);
 
     for (thread &t : tasks)
         t.join();
