@@ -8,23 +8,23 @@ using namespace std;
 
 #define SECOND_SLEEP 1000000
 
-void writeRoutine(Channel<string> &ch, __useconds_t delay, int index, unsigned int fakeValuesCount) {
+void writeRoutine(channel<string> &ch, __useconds_t delay, int index, unsigned int fakeValuesCount) {
     for (int i = 0; i < fakeValuesCount; ++i) {
         ch << ("hello " + to_string(index));
         usleep(delay);
     }
 }
 
-void readRoutine(Channel<string> &ch, unsigned int waitJobsCount) {
+void readRoutine(channel<string> &ch, unsigned int waitJobsCount) {
     string s;
     for (int i = 0; i < waitJobsCount; ++i) {
-        ch >> s;
+        s << ch;
         cout << s << endl;
     }
 }
 
 int main(int argc, char **argv) {
-    Channel<string> ch(50000);
+    channel<string> ch(50000);
 
     vector<thread> tasks;
 
